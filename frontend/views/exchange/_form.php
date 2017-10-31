@@ -27,12 +27,12 @@ use yii\widgets\ActiveForm;
         </div>
         <div class="col-sm-2">
             <?= $form->field($model, 'wallet_from')->dropDownList(
-                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->asArray()->all(), 'id', 'code' )
+                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->asArray()->all(), 'id', 'name' )
             ) ?>
         </div>
         <div class="col-sm-2">
             <?= $form->field($model, 'wallet_to')->dropDownList(
-                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->asArray()->all(), 'id', 'code')
+                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->asArray()->all(), 'id', 'name')
             ) ?>
         </div>
         <div class="col-sm-1">
