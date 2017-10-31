@@ -130,21 +130,12 @@ class WalletController extends Controller
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
 
-            $connection = Yii::$app->getDb();
-            $command = $connection->createCommand("
-SELECT IFNULL(sum(VALUE),0) 
-+ (SELECT IFNULL(sum(VALUE*RATE),0) FROM exchange WHERE user_id = :user_id and wallet_to = :wallet_id)
-- (SELECT IFNULL(sum(VALUE),0) FROM outgo WHERE user_id = :user_id and wallet_id = :wallet_id)
-- (SELECT IFNULL(sum(VALUE),0) FROM exchange WHERE user_id = :user_id and wallet_from = :wallet_id)
- as balance FROM income WHERE user_id = :user_id and wallet_id = :wallet_id",
-                [
-                    ':user_id' => Yii::$app->getUser()->id,
-                    ':wallet_id' => $wallet->id
-                ]
-            );
+            $income_sum = Income::find()->where(['user_id' => Yii::$app->getUser()->id, 'wallet_id' => $wallet->id])->sum('value');
+            $exchange_to_sum = Exchange::find()->where(['user_id' => Yii::$app->getUser()->id, 'wallet_to' => $wallet->id])->sum('value*rate');
+            $outgo_sum = Outgo::find()->where(['user_id' => Yii::$app->getUser()->id, 'wallet_id' => $wallet->id])->sum('value');
+            $exchange_from_sum = Exchange::find()->where(['user_id' => Yii::$app->getUser()->id, 'wallet_from' => $wallet->id])->sum('value');
 
-            $result = $command->queryOne();
-            $wallet->balance = $result['balance'];
+            $wallet->balance = $income_sum + $exchange_to_sum - $outgo_sum - $exchange_from_sum;
             $wallet->save();
         }
 
