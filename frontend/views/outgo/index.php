@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\DataColumn',
                 'label' => Yii::t('app', 'Кошелек'),
-                'value' => 'wallet.code',
+                'value' => 'wallet.name',
                 'attribute' => 'wallet_id',
                 'filterType' => GridView::FILTER_SELECT2,
                 'hAlign' => 'left',
