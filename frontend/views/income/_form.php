@@ -36,7 +36,7 @@ use yii\widgets\ActiveForm;
         </div>
         <div class="col-sm-1">
             <?= $form->field($model, 'wallet_id')->dropDownList(
-                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->orderBy('code ASC')->asArray()->all(), 'id', 'code')
+                ArrayHelper::map(Wallet::find()->where(['user_id' => Yii::$app->user->id])->orderBy('name ASC')->asArray()->all(), 'id', 'name')
             ) ?>
         </div>
         <div class="col-sm-5">

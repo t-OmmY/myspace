@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\DataColumn',
                 'label' => Yii::t('app', 'Откуда'),
-                'value' => 'walletFrom.code',
+                'value' => 'walletFrom.name',
                 'attribute' => 'wallet_from',
                 'filterType' => GridView::FILTER_SELECT2,
                 'hAlign' => 'left',
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'width' => '150px',
                 'filter' => ArrayHelper::map(Exchange::find()
                     ->innerJoinWith('walletFrom')
-                    ->orderBy('code')->asArray()->all(), 'wallet_from', 'walletFrom.code'
+                    ->orderBy('name')->asArray()->all(), 'wallet_from', 'walletFrom.name'
                 ),
                 'filterWidgetOptions' => [
                     'size' => Select2::SMALL,
@@ -97,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\DataColumn',
                 'label' => Yii::t('app', 'Куда'),
-                'value' => 'walletTo.code',
+                'value' => 'walletTo.name',
                 'attribute' => 'wallet_to',
                 'filterType' => GridView::FILTER_SELECT2,
                 'hAlign' => 'left',
@@ -106,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'width' => '150px',
                 'filter' => ArrayHelper::map(Exchange::find()
                     ->innerJoinWith('walletTo')
-                    ->orderBy('code')->asArray()->all(), 'wallet_to', 'walletTo.code'
+                    ->orderBy('name')->asArray()->all(), 'wallet_to', 'walletTo.name'
                 ),
                 'filterWidgetOptions' => [
                     'size' => Select2::SMALL,
