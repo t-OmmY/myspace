@@ -8,7 +8,7 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * This is the model class for table "user".
  *
  * @property integer $id
  * @property string $username
@@ -20,6 +20,16 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property integer $main_wallet_id
+ *
+ * @property Exchange[] $exchanges
+ * @property Income[] $incomes
+ * @property IncomeSource[] $incomeSources
+ * @property Outgo[] $outgos
+ * @property OutgoSource[] $outgoSources
+ * @property OutgoType[] $outgoTypes
+ * @property Wallet $mainWallet
+ * @property Wallet[] $wallets
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -53,6 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            [['main_wallet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Wallet::className(), 'targetAttribute' => ['main_wallet_id' => 'id']],
         ];
     }
 
@@ -194,9 +205,79 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => Yii::t('app', '#'),
-            'username' => Yii::t('app', 'Пользователь'),
+            'username' => Yii::t('app', 'Username'),
+            'auth_key' => Yii::t('app', 'Auth Key'),
+            'password_hash' => Yii::t('app', 'Password Hash'),
+            'password_reset_token' => Yii::t('app', 'Password Reset Token'),
+            'email' => Yii::t('app', 'Email'),
+            'status' => Yii::t('app', 'Статус'),
             'created_at' => Yii::t('app', 'Создано'),
             'updated_at' => Yii::t('app', 'Изменено'),
+            'main_wallet_id' => Yii::t('app', 'Основной кошелек'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExchanges()
+    {
+        return $this->hasMany(Exchange::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIncomes()
+    {
+        return $this->hasMany(Income::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIncomeSources()
+    {
+        return $this->hasMany(IncomeSource::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutgos()
+    {
+        return $this->hasMany(Outgo::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutgoSources()
+    {
+        return $this->hasMany(OutgoSource::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutgoTypes()
+    {
+        return $this->hasMany(OutgoType::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMainWallet()
+    {
+        return $this->hasOne(Wallet::className(), ['id' => 'main_wallet_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWallets()
+    {
+        return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
     }
 }

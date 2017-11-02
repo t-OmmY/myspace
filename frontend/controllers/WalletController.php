@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Exchange;
 use common\models\Income;
 use common\models\Outgo;
+use linslin\yii2\curl\Curl;
 use Yii;
 use common\models\Wallet;
 use common\models\WalletSearch;
@@ -57,6 +58,16 @@ class WalletController extends Controller
         $currency_list = Yii::$app->params['currency_list'];
         $model->user_id = Yii::$app->getUser()->id;
 
+        $user = $model->user;
+        $main_wallet = $user->mainWallet;
+        $user_wallets = $user->wallets;
+        $user_wallets_list = [];
+        foreach ($user_wallets as $user_wallet) {
+            $user_wallets_list[$user_wallet->id] = $user_wallet->code;
+        }
+        $user_wallets_list = array_unique($user_wallets_list);
+
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         }
@@ -64,7 +75,12 @@ class WalletController extends Controller
         $searchModel = new WalletSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $total_balance = $this->getTotalBalance($user_wallets, $user);
+
         return $this->render('index', [
+            'user_wallets_list' => $user_wallets_list,
+            'main_wallet' => $main_wallet,
+            'total_balance' =>  $total_balance,
             'currency_list' => $currency_list,
             'model' => $model,
             'searchModel' => $searchModel,
@@ -140,5 +156,34 @@ class WalletController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionChangeMainWallet()
+    {
+        $model = $this->findModel(Yii::$app->request->get('id'));
+        if (!empty($model)){
+            $user = $model->user;
+            $user->main_wallet_id = Yii::$app->request->get('id');
+            $user->save();
+        }
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $user_wallets
+     * @param $user
+     * @return float|int
+     */
+    private function getTotalBalance($user_wallets, $user)
+    {
+        $rates = Exchange::getRates($user_wallets, $user);
+        $total_balance = 0;
+
+        /** @var Wallet $wallet */
+        foreach ($user_wallets as $wallet) {
+            $total_balance += $wallet->balance * (isset($rates[$wallet->code]) ? $rates[$wallet->code] : 1);
+        }
+
+        return round($total_balance, 2);
     }
 }

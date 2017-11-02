@@ -22,6 +22,7 @@ use yii\behaviors\TimestampBehavior;
  * @property Income[] $incomes
  * @property Outgo[] $outgos
  * @property User $user
+ * @property User[] $users
  */
 class Wallet extends \yii\db\ActiveRecord
 {
@@ -96,6 +97,15 @@ class Wallet extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(User::className(), ['main_wallet_id' => 'id']);
     }
 
     /**
