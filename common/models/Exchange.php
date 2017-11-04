@@ -104,21 +104,20 @@ class Exchange extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $user_wallets
-     * @param $user
+     * @param $wallets
+     * @param $to_wallet
      * @return mixed|null
      */
-    public static function getRates($user_wallets, $user)
+    public static function getRates($wallets, $to_wallet)
     {
         $currency_list = [];
         /** @var Wallet $wallet */
-        foreach ($user_wallets as $wallet){
+        foreach ($wallets as $wallet){
             $currency_list[] = $wallet->code;
         }
         $currency_list = array_unique($currency_list);
 
-        $main_wallet = $user->mainWallet;
-        $to = [$main_wallet->code];
+        $to = [$to_wallet->code];
 
         $currencies = new Currency();
         return $currencies->currency($currency_list, $to);

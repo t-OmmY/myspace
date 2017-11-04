@@ -13,7 +13,13 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('app', 'Outgos');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<h1><?= Html::encode($this->title) ?></h1>
+<h1>
+    <?= Html::encode($this->title) ?>
+
+    <span class="pull-right text-warning">
+                    <strong><?=$total_balance["value"] . ' ' . strtolower($total_balance["currency"])?></strong>
+    </span>
+</h1>
 
 
 <div class="outgo-create">

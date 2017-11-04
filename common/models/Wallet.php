@@ -123,4 +123,34 @@ class Wallet extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Exchange::className(), ['wallet_to' => 'id']);
     }
+
+    /**
+     * @param bool $rates
+     * @return array
+     * @internal param $user_wallets
+     * @internal param $user
+     */
+    public static function getTotalBalance($rates = false)
+    {
+        $model = new self();
+        $model->user_id = Yii::$app->getUser()->id;
+        $user = $model->user;
+        $user_wallets = $user->wallets;
+        $main_wallet = $user->mainWallet;
+
+        if (!$rates) {
+            $rates = Exchange::getRates($user_wallets, $main_wallet);
+        }
+        $total_balance = 0;
+
+        /** @var Wallet $wallet */
+        foreach ($user_wallets as $wallet) {
+            $total_balance += $wallet->balance * (isset($rates[$wallet->code]) ? $rates[$wallet->code] : 1);
+        }
+
+        return [
+            'value' => round($total_balance, 2),
+            'currency' => $main_wallet->code,
+        ];
+    }
 }

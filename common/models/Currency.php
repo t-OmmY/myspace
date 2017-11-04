@@ -3,17 +3,65 @@
 namespace common\models;
 use linslin\yii2\curl\Curl;
 use Yii;
-
+use yii\behaviors\TimestampBehavior;
 
 /**
- * Created by PhpStorm.
- * User: technokid
- * Date: 13.03.17
- * Time: 10:59
+ * This is the model class for table "currency".
+ *
+ * @property integer $id
+ * @property string $date
+ * @property string $request
+ * @property string $response
+ * @property integer $created_at
+ * @property integer $updated_at
  */
-class Currency
+class Currency extends \yii\db\ActiveRecord
 {
 	private $currency_url;
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'currency';
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['date', 'request', 'response'], 'safe'],
+            [['request', 'response'], 'string', 'max' => 255],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'date' => Yii::t('app', 'Date'),
+            'request' => Yii::t('app', 'Request'),
+            'response' => Yii::t('app', 'Response'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
+        ];
+    }
 
 	/**
 	 * function __construct
@@ -57,12 +105,22 @@ class Currency
 		if (empty($currencies))
 			$currencies = Yii::$app->params['currency_list'];
 
+		$curr_str = '["' . $this->getStringCurrencies($currencies) . '"]';
+
+		/** @var Currency $response */
+		$response = Currency::find()->where(['request' => $curr_str, 'date' => date('Y-m-d')])->one();
+		if ($response){
+            $to_currency = $this->getConvertString($to);
+
+            return $this->handleResponse($response->response, $to_currency);
+        }
+
 		//curl object init
 		$curl = $this->setConnect();
 
 		//request
         $response = $curl->setGetParams([
-            'currencies' => '["' . $this->getStringCurrencies($currencies) . '"]',
+            'currencies' => $curr_str,
         ])
             ->get($this->currency_url);
 
@@ -72,6 +130,13 @@ class Currency
 		//handle response
 		if (!empty($response)) {
 			if (!empty($to)) {
+
+			    $currency = new self;
+                $currency->date = date('Y-m-d');
+                $currency->response = $response;
+                $currency->request = $curr_str;
+                $currency->save();
+
 				$to_currency = $this->getConvertString($to);
 
 				return $this->handleResponse($response, $to_currency);

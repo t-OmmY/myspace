@@ -75,7 +75,7 @@ class WalletController extends Controller
         $searchModel = new WalletSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $total_balance = $this->getTotalBalance($user_wallets, $user);
+        $total_balance = Wallet::getTotalBalance();
 
         return $this->render('index', [
             'user_wallets_list' => $user_wallets_list,
@@ -167,23 +167,5 @@ class WalletController extends Controller
             $user->save();
         }
         return $this->redirect(['index']);
-    }
-
-    /**
-     * @param $user_wallets
-     * @param $user
-     * @return float|int
-     */
-    private function getTotalBalance($user_wallets, $user)
-    {
-        $rates = Exchange::getRates($user_wallets, $user);
-        $total_balance = 0;
-
-        /** @var Wallet $wallet */
-        foreach ($user_wallets as $wallet) {
-            $total_balance += $wallet->balance * (isset($rates[$wallet->code]) ? $rates[$wallet->code] : 1);
-        }
-
-        return round($total_balance, 2);
     }
 }

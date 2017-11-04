@@ -14,7 +14,7 @@ $this->title = Yii::t('app', 'Wallet');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <h1>
-    <strong><?=$total_balance . ' ' . strtolower($main_wallet->code)?></strong>
+    <strong><?=$total_balance["value"] . ' ' . strtolower($total_balance["currency"])?></strong>
     <?= Html::a(Yii::t('app', 'Обновить'), Url::toRoute(['wallet/refresh']), ['class' =>'btn btn-primary']) ?>
 
     <span class="pull-right text-warning">
