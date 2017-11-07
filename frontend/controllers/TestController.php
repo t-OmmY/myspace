@@ -2,27 +2,9 @@
 
 namespace frontend\controllers;
 
-use libphonenumber\PhoneNumberUtil;
-use yii\base\Exception;
-use yii\base\InvalidParamException;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
-use yii\log\Logger;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\models\Client;
-use common\models\User;
-use common\models\UserVerify;
-use common\models\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
 use Yii;
-use smartlinegroup\smsSDK\Sms;
-use smartlinegroup\callbackSDK\Callback;
 
 /**
  * Site controller
