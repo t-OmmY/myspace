@@ -84,10 +84,14 @@ class OutgoController extends Controller
         $searchModel = new OutgoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $total_balance = Wallet::getTotalBalance();
+
         return $this->render('index', [
-            'model' => $model,
+            'total_balance' =>  $total_balance,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model' => $model,
+
         ]);
     }
 

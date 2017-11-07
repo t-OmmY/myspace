@@ -1,5 +1,7 @@
 <?php
 
+use common\models\User;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
@@ -12,8 +14,14 @@ $this->title = Yii::t('app', 'Wallet');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <h1>
-    <?= Html::encode($this->title) ?>
+    <strong><?=$total_balance["value"] . ' ' . strtolower($total_balance["currency"])?></strong>
     <?= Html::a(Yii::t('app', 'Обновить'), Url::toRoute(['wallet/refresh']), ['class' =>'btn btn-primary']) ?>
+
+    <span class="pull-right text-warning">
+
+        <?= Html::label(Yii::t('app', 'Основная валюта: '), $main_wallet->id)?>
+        <?= Html::dropDownList('main_wallet_id', $main_wallet->id, $user_wallets_list, ['onchange'=> 'window.location = "/wallet/change-main-wallet?id=" + this.value;'])?>
+    </span>
 </h1>
 
 <div class="wallet-create">

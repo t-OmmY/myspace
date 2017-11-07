@@ -22,6 +22,7 @@ use yii\behaviors\TimestampBehavior;
  * @property Income[] $incomes
  * @property Outgo[] $outgos
  * @property User $user
+ * @property User[] $users
  */
 class Wallet extends \yii\db\ActiveRecord
 {
@@ -98,6 +99,15 @@ class Wallet extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(User::className(), ['main_wallet_id' => 'id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -112,5 +122,35 @@ class Wallet extends \yii\db\ActiveRecord
     public function getExchanges0()
     {
         return $this->hasMany(Exchange::className(), ['wallet_to' => 'id']);
+    }
+
+    /**
+     * @param bool $rates
+     * @return array
+     * @internal param $user_wallets
+     * @internal param $user
+     */
+    public static function getTotalBalance($rates = false)
+    {
+        $model = new self();
+        $model->user_id = Yii::$app->getUser()->id;
+        $user = $model->user;
+        $user_wallets = $user->wallets;
+        $main_wallet = $user->mainWallet;
+
+        if (!$rates) {
+            $rates = Exchange::getRates($user_wallets, $main_wallet);
+        }
+        $total_balance = 0;
+
+        /** @var Wallet $wallet */
+        foreach ($user_wallets as $wallet) {
+            $total_balance += $wallet->balance * (isset($rates[$wallet->code]) ? $rates[$wallet->code] : 1);
+        }
+
+        return [
+            'value' => round($total_balance, 2),
+            'currency' => $main_wallet->code,
+        ];
     }
 }

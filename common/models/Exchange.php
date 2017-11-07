@@ -17,7 +17,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $description
  * @property integer $user_id
  * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $updated_atget
  *
  * @property User $user
  * @property Wallet $walletFrom
@@ -101,5 +101,25 @@ class Exchange extends \yii\db\ActiveRecord
     public function getWalletTo()
     {
         return $this->hasOne(Wallet::className(), ['id' => 'wallet_to']);
+    }
+
+    /**
+     * @param $wallets
+     * @param $to_wallet
+     * @return mixed|null
+     */
+    public static function getRates($wallets, $to_wallet)
+    {
+        $currency_list = [];
+        /** @var Wallet $wallet */
+        foreach ($wallets as $wallet){
+            $currency_list[] = $wallet->code;
+        }
+        $currency_list = array_unique($currency_list);
+
+        $to = [$to_wallet->code];
+
+        $currencies = new Currency();
+        return $currencies->currency($currency_list, $to);
     }
 }

@@ -82,7 +82,10 @@ class IncomeController extends Controller
         $searchModel = new IncomeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $total_balance = Wallet::getTotalBalance();
+
         return $this->render('index', [
+            'total_balance' =>  $total_balance,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,

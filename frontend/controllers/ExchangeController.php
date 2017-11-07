@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Wallet;
 use Exception;
 use Throwable;
 use Yii;
@@ -34,6 +35,8 @@ class ExchangeController extends Controller
     /**
      * Lists all Exchange models.
      * @return mixed
+     * @throws Exception
+     * @throws Throwable
      */
     public function actionIndex()
     {
@@ -70,7 +73,10 @@ class ExchangeController extends Controller
         $searchModel = new ExchangeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $total_balance = Wallet::getTotalBalance();
+
         return $this->render('index', [
+            'total_balance' =>  $total_balance,
             'model' => $model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
