@@ -61,14 +61,24 @@ class WalletController extends Controller
         $user = $model->user;
         $main_wallet = $user->mainWallet;
         $user_wallets = $user->wallets;
-        $user_wallets_list = [];
+
+		if (!($main_wallet) && !empty($user_wallets)){
+			$main_wallet = array_pop($user_wallets);
+			$user->main_wallet_id = $main_wallet->id;
+			$user->save();
+		}
+
+		$user_wallets_list = [];
         foreach ($user_wallets as $user_wallet) {
             $user_wallets_list[$user_wallet->id] = $user_wallet->code;
         }
         $user_wallets_list = array_unique($user_wallets_list);
 
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+			if (!($main_wallet)){
+				$user->main_wallet_id = $model->id;
+				$user->save();
+			}
             return $this->redirect(['index']);
         }
 
@@ -79,7 +89,7 @@ class WalletController extends Controller
 
         return $this->render('index', [
             'user_wallets_list' => $user_wallets_list,
-            'main_wallet' => $main_wallet,
+            'main_wallet' => $main_wallet ? $main_wallet : new Wallet(),
             'total_balance' =>  $total_balance,
             'currency_list' => $currency_list,
             'model' => $model,
@@ -118,7 +128,13 @@ class WalletController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+		$model = $this->findModel($id);
+		if ($model->user->main_wallet_id == $id){
+			$model->user->main_wallet_id = '';
+			$model->user->save();
+		}
+
+		$model->delete();
 
         return $this->redirect(['index']);
     }

@@ -138,6 +138,13 @@ class Wallet extends \yii\db\ActiveRecord
         $user_wallets = $user->wallets;
         $main_wallet = $user->mainWallet;
 
+		if (empty($user_wallets) || empty($main_wallet)){
+			return [
+				'value' => 0,
+				'currency' => 'no data'
+			];
+		}
+
         if (!$rates) {
             $rates = Exchange::getRates($user_wallets, $main_wallet);
         }

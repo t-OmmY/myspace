@@ -110,6 +110,12 @@ class Exchange extends \yii\db\ActiveRecord
      */
     public static function getRates($wallets, $to_wallet)
     {
+		if (count($wallets) == 1){
+			return [
+				$wallets[0]->code => 1
+			];
+		}
+
         $currency_list = [];
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet){
