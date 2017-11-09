@@ -16,6 +16,8 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $updated_at
  *
  * @property Income[] $incomes
+ * @property IncomePlan[] $incomePlans
+ * @property User $user
  */
 class IncomeSource extends \yii\db\ActiveRecord
 {
@@ -78,4 +80,12 @@ class IncomeSource extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomePlans()
+	{
+		return $this->hasMany(IncomePlan::className(), ['income_source_id' => 'id']);
+	}
 }

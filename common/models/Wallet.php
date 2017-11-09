@@ -20,9 +20,11 @@ use yii\behaviors\TimestampBehavior;
  * @property Exchange[] $exchanges
  * @property Exchange[] $exchanges0
  * @property Income[] $incomes
+ * @property IncomePlan[] $incomePlans
  * @property Outgo[] $outgos
- * @property User $user
+ * @property OutgoPlan[] $outgoPlans
  * @property User[] $users
+ * @property User $user
  */
 class Wallet extends \yii\db\ActiveRecord
 {
@@ -75,54 +77,69 @@ class Wallet extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIncomes()
-    {
-        return $this->hasMany(Income::className(), ['wallet_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getExchanges()
+	{
+		return $this->hasMany(Exchange::className(), ['wallet_from' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOutgos()
-    {
-        return $this->hasMany(Outgo::className(), ['wallet_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getExchanges0()
+	{
+		return $this->hasMany(Exchange::className(), ['wallet_to' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomes()
+	{
+		return $this->hasMany(Income::className(), ['wallet_id' => 'id']);
+	}
 
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomePlans()
+	{
+		return $this->hasMany(IncomePlan::className(), ['wallet_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
-    {
-        return $this->hasMany(User::className(), ['main_wallet_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgos()
+	{
+		return $this->hasMany(Outgo::className(), ['wallet_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExchanges()
-    {
-        return $this->hasMany(Exchange::className(), ['wallet_from' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgoPlans()
+	{
+		return $this->hasMany(OutgoPlan::className(), ['wallet_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExchanges0()
-    {
-        return $this->hasMany(Exchange::className(), ['wallet_to' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getUsers()
+	{
+		return $this->hasMany(User::className(), ['main_wallet_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getUser()
+	{
+		return $this->hasOne(User::className(), ['id' => 'user_id']);
+	}
 
     /**
      * @param bool $rates

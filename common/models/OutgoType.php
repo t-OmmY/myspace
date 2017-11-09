@@ -17,6 +17,9 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $updated_at
  *
  * @property Outgo[] $outgos
+ * @property OutgoPlan[] $outgoPlans
+ * @property OutgoSource $outgoSource
+ * @property User $user
  */
 class OutgoType extends \yii\db\ActiveRecord
 {
@@ -88,4 +91,11 @@ class OutgoType extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgoPlans()
+	{
+		return $this->hasMany(OutgoPlan::className(), ['outgo_type_id' => 'id']);
+	}
 }
