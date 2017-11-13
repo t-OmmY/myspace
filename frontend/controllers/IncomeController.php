@@ -58,6 +58,8 @@ class IncomeController extends Controller
         $model->user_id = Yii::$app->getUser()->id;
         $model->date = date("Y-m-d H:i:s");
 
+        $model->wallet_id = $model->user->main_wallet_id;
+
         if ($model->load(Yii::$app->request->post())) {
             $connection = \Yii::$app->db;
             $transaction = $connection->beginTransaction();
