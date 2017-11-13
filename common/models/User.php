@@ -24,8 +24,10 @@ use yii\web\IdentityInterface;
  *
  * @property Exchange[] $exchanges
  * @property Income[] $incomes
+ * @property IncomePlan[] $incomePlans
  * @property IncomeSource[] $incomeSources
  * @property Outgo[] $outgos
+ * @property OutgoPlan[] $outgoPlans
  * @property OutgoSource[] $outgoSources
  * @property OutgoType[] $outgoTypes
  * @property Wallet $mainWallet
@@ -217,67 +219,83 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExchanges()
-    {
-        return $this->hasMany(Exchange::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getExchanges()
+	{
+		return $this->hasMany(Exchange::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIncomes()
-    {
-        return $this->hasMany(Income::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomes()
+	{
+		return $this->hasMany(Income::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIncomeSources()
-    {
-        return $this->hasMany(IncomeSource::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomePlans()
+	{
+		return $this->hasMany(IncomePlan::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOutgos()
-    {
-        return $this->hasMany(Outgo::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIncomeSources()
+	{
+		return $this->hasMany(IncomeSource::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOutgoSources()
-    {
-        return $this->hasMany(OutgoSource::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgos()
+	{
+		return $this->hasMany(Outgo::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOutgoTypes()
-    {
-        return $this->hasMany(OutgoType::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgoPlans()
+	{
+		return $this->hasMany(OutgoPlan::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMainWallet()
-    {
-        return $this->hasOne(Wallet::className(), ['id' => 'main_wallet_id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgoSources()
+	{
+		return $this->hasMany(OutgoSource::className(), ['user_id' => 'id']);
+	}
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getWallets()
-    {
-        return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
-    }
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getOutgoTypes()
+	{
+		return $this->hasMany(OutgoType::className(), ['user_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getMainWallet()
+	{
+		return $this->hasOne(Wallet::className(), ['id' => 'main_wallet_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getWallets()
+	{
+		return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
+	}
 }
