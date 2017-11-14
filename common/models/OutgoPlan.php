@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "outgo_plan".
@@ -34,17 +35,26 @@ class OutgoPlan extends \yii\db\ActiveRecord
         return 'outgo_plan';
     }
 
+	/**
+	 * @return array
+	 */
+	public function behaviors()
+	{
+		return [
+			TimestampBehavior::className(),
+		];
+	}
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['date_from', 'date_to'], 'date'],
             [['outgo_source_id', 'outgo_type_id', 'wallet_id', 'user_id'], 'integer'],
             [['value'], 'number'],
             [['description'], 'string'],
-            [['date_from', 'date_to', 'value', 'wallet_id', 'user_id', 'outgo_source_id', 'outgo_type_id'], 'required'],
+            [['date_from', 'date_to', 'value', 'wallet_id', 'user_id', 'outgo_source_id', 'outgo_type_id'], 'required', 'message' => ''],
             [['outgo_source_id'], 'exist', 'skipOnError' => true, 'targetClass' => OutgoSource::className(), 'targetAttribute' => ['outgo_source_id' => 'id']],
             [['outgo_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => OutgoType::className(), 'targetAttribute' => ['outgo_type_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -58,17 +68,17 @@ class OutgoPlan extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'date_from' => Yii::t('app', 'Date From'),
-            'date_to' => Yii::t('app', 'Date To'),
-            'outgo_source_id' => Yii::t('app', 'Outgo Source ID'),
-            'outgo_type_id' => Yii::t('app', 'Outgo Type ID'),
-            'value' => Yii::t('app', 'Value'),
-            'wallet_id' => Yii::t('app', 'Wallet ID'),
-            'description' => Yii::t('app', 'Description'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+			'id' => Yii::t('app', '#'),
+			'date_from' => Yii::t('app', 'Дата С'),
+			'date_to' => Yii::t('app', 'Дата По'),
+            'outgo_source_id' => Yii::t('app', 'Категория'),
+            'outgo_type_id' => Yii::t('app', 'Подкатегория'),
+			'value' => Yii::t('app', 'Значение'),
+			'wallet_id' => Yii::t('app', 'Кошелек'),
+			'description' => Yii::t('app', 'Описание'),
+			'user_id' => Yii::t('app', 'Пользователь'),
+			'created_at' => Yii::t('app', 'Создано'),
+			'updated_at' => Yii::t('app', 'Изменено'),
         ];
     }
 
