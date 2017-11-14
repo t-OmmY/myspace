@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "income_plan".
@@ -32,17 +33,26 @@ class IncomePlan extends \yii\db\ActiveRecord
         return 'income_plan';
     }
 
+	/**
+	 * @return array
+	 */
+	public function behaviors()
+	{
+		return [
+			TimestampBehavior::className(),
+		];
+	}
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['date_from', 'date_to'], 'date'],
             [['income_source_id', 'wallet_id', 'user_id'], 'integer'],
             [['value'], 'number'],
             [['description'], 'string'],
-            [['date_from', 'date_to', 'value', 'wallet_id', 'user_id', 'income_source_id'], 'required'],
+            [['date_from', 'date_to', 'value', 'wallet_id', 'user_id', 'income_source_id'], 'required', 'message' => ''],
             [['income_source_id'], 'exist', 'skipOnError' => true, 'targetClass' => IncomeSource::className(), 'targetAttribute' => ['income_source_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['wallet_id'], 'exist', 'skipOnError' => true, 'targetClass' => Wallet::className(), 'targetAttribute' => ['wallet_id' => 'id']],
