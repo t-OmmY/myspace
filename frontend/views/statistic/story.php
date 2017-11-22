@@ -96,7 +96,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
 <script>
 	function dashboard(id, fData) {
-        console.log(fData);
         var barColor = 'steelblue';
 		var labels = [];
 		var colors = [];
