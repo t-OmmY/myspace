@@ -12,7 +12,9 @@ namespace frontend\controllers;
 use common\models\Outgo;
 use common\models\User;
 use DateTime;
+use Yii;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 
@@ -23,14 +25,32 @@ class StatisticController extends Controller
         //todo here should be a list of availables reports
     }
 
-    //todo this method should be private with getting some parameters
     public function actionStory()
+    {
+        $years = ArrayHelper::map(Outgo::find()->select('YEAR(date)')->where(['user_id' => Yii::$app->user->id])->groupBy('YEAR(date)')->orderBy('YEAR(date) DESC')->asArray()->all(), 'YEAR(date)', 'YEAR(date)');
+
+        $data = $this->getYearData(max($years));
+
+        $model = new Outgo();
+
+        return $this->render('story', [
+            'model' => $model,
+            'years' => $years,
+            'Data' => Json::encode($data['2017'])
+        ]);
+    }
+
+    /**
+     * @param $year
+     * @return array
+     */
+    private function getYearData($year)
     {
         $rows = (new Query())
             ->select(['YEAR(date) AS year', 'MONTH(date) AS month', 'outgo_source.name AS source', 'sum(value) AS value'])
             ->from('outgo')
             ->innerJoin('outgo_source', 'outgo.outgo_source_id = outgo_source.id')
-            ->where('YEAR(date) in (2017, 2016, 2015, 2014)') //todo this is parameter!!!
+            ->where('YEAR(date) in (' . $year . ')') //todo this is parameter!!!
             ->groupBy(['YEAR(date)', 'MONTH(date)', 'outgo_source_id'])
             ->all();
 
@@ -48,12 +68,14 @@ class StatisticController extends Controller
 
         foreach ($data as $year => $datum) {
             $data[$year] = array_values($datum);
-//            foreach ($data[$year] as $slice => $info) {
-//                $data[$year][$slice]['total'] = array_sum($info['data']);
-//                arsort($data[$year][$slice]['data']);
-//            }
         }
 
-        return $this->render('story', ['Data' => Json::encode($data['2017'])]);
+        return $data;
+    }
+
+    public function actionYear($year)
+    {
+        $data = $this->getYearData($year);
+        echo json_encode($data);
     }
 }

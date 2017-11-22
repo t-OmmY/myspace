@@ -65,13 +65,39 @@
 
 </style>
 <body>
+<div class="outgo-form">
+
+    <?php use common\models\Outgo;
+    use yii\helpers\ArrayHelper;
+    use yii\widgets\ActiveForm;
+
+    $form = ActiveForm::begin(); ?>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <?= $form->field($model, 'date')->dropDownList(
+                $years,
+                ['onchange'=>'
+                var self = this;
+                $.post( "'.Yii::$app->urlManager->createUrl('statistic/year?year=').'"+$(this).val(), function( data ) {
+                  	var fData = JSON.parse(data); 
+                  	$("#dashboard").html("");
+                  	dashboard("#dashboard", fData[$(self).val()]);
+                });
+            ',  'autofocus' => 'autodocus'])->label(Yii::t('app', 'Год')) ?>
+        </div>
+
+    <?php ActiveForm::end(); ?>
+
+</div>
 <div id='dashboard'>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
 <script>
 	function dashboard(id, fData) {
-		var barColor = 'steelblue';
+        console.log(fData);
+        var barColor = 'steelblue';
 		var labels = [];
 		var colors = [];
 
@@ -343,7 +369,5 @@
 </script>
 
 <script>
-
-
 	dashboard('#dashboard',<?=$Data?>);
 </script>
