@@ -12,6 +12,8 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Exchanges');
 $this->params['breadcrumbs'][] = $this->title;
+$table_name = str_replace('_', '-', get_class($model)::tableName());
+
 ?>
 <div class="exchange-create">
 
@@ -36,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'tableOptions' => [
             'class' => 'b-table b-table_orders b-table_trasaction'
         ],
-        'rowOptions' => ['class' => 'tr'],
+        'rowOptions' => ['class' => 'tr', 'ondblclick' => "alert('Редактирование недоступно')"],
         'filterRowOptions' => ['class' => 'tr form-filter'],
 
         'dataProvider' => $dataProvider,

@@ -13,6 +13,8 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Income Plans');
 $this->params['breadcrumbs'][] = $this->title;
+$table_name = str_replace('_', '-', get_class($model)::tableName());
+
 ?>
 <h1>
     <?= Html::encode($this->title) ?>
@@ -31,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'tableOptions' => [
             'class' => 'b-table b-table_orders b-table_trasaction'
         ],
-        'rowOptions' => ['class' => 'tr'],
+        'rowOptions' => ['class' => 'tr', 'ondblclick' => "window.location.href = '/{$table_name}/update?id=' + $(this).attr('data-key')"],
         'filterRowOptions' => ['class' => 'tr form-filter'],
 
         'dataProvider' => $dataProvider,

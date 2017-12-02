@@ -12,6 +12,8 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Wallet');
 $this->params['breadcrumbs'][] = $this->title;
+$table_name = str_replace('_', '-', get_class($model)::tableName());
+
 ?>
 <h1>
     <strong><?=$total_balance["value"] . ' ' . strtolower($total_balance["currency"])?></strong>
@@ -37,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'tableOptions' => [
             'class' => 'b-table b-table_orders b-table_trasaction'
         ],
-        'rowOptions' => ['class' => 'tr'],
+        'rowOptions' => ['class' => 'tr', 'ondblclick' => "window.location.href = '/{$table_name}/update?id=' + $(this).attr('data-key')"],
         'filterRowOptions' => ['class' => 'tr form-filter'],
 
         'dataProvider' => $dataProvider,
