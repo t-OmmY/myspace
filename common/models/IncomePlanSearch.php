@@ -66,7 +66,7 @@ class IncomePlanSearch extends IncomePlan
 
 		$query->joinWith(['wallet', 'incomeSource', 'user']);
 
-		$query->orderBy('date_from DESC');
+		$query->orderBy('created_at DESC');
 		// add conditions that should always apply here
 
 		$dataProvider = new ActiveDataProvider([

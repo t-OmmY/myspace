@@ -36,7 +36,7 @@ class StatisticController extends Controller
         return $this->render('story', [
             'model' => $model,
             'years' => $years,
-            'Data' => Json::encode($data['2017'])
+            'Data' => Json::encode($data[max($years)])
         ]);
     }
 
@@ -50,7 +50,7 @@ class StatisticController extends Controller
             ->select(['YEAR(date) AS year', 'MONTH(date) AS month', 'outgo_source.name AS source', 'sum(value) AS value'])
             ->from('outgo')
             ->innerJoin('outgo_source', 'outgo.outgo_source_id = outgo_source.id')
-            ->where('YEAR(date) in (' . $year . ')') //todo this is parameter!!!
+            ->where('YEAR(date) in (' . $year . ')')
             ->groupBy(['YEAR(date)', 'MONTH(date)', 'outgo_source_id'])
             ->all();
 

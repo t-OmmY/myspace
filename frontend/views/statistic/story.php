@@ -67,8 +67,7 @@
 <body>
 <div class="outgo-form">
 
-    <?php use common\models\Outgo;
-    use yii\helpers\ArrayHelper;
+    <?php
     use yii\widgets\ActiveForm;
 
     $form = ActiveForm::begin(); ?>
@@ -87,10 +86,11 @@
             ',  'autofocus' => 'autodocus'])->label(Yii::t('app', 'Год')) ?>
         </div>
 
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
 
-</div>
-<div id='dashboard'>
+    </div>
+    <div id='dashboard'>
+    </div>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>

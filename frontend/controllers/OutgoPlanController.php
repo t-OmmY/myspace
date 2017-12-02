@@ -50,9 +50,12 @@ class OutgoPlanController extends Controller
     {
 		$model = new OutgoPlan();
 
+		/** @var OutgoPlan $last_record */
+        $last_record = OutgoPlan::find()->orderBy(['id' => SORT_DESC])->one();
+
 		$model->user_id = Yii::$app->getUser()->id;
-		$model->date_from = date("Y-m-d");
-		$model->date_to = date('Y-m-d', strtotime("+1 months", strtotime($model->date_from)));
+		$model->date_from = $last_record ? $last_record->date_from : date("Y-m-d");
+		$model->date_to = $last_record ? $last_record->date_to : date('Y-m-d', strtotime("+1 months", strtotime($model->date_from)));
 
 		$model->wallet_id = $model->user->main_wallet_id;
 

@@ -67,7 +67,7 @@ class OutgoPlanSearch extends OutgoPlan
 
 		$query->joinWith(['wallet', 'outgoSource', 'outgoType', 'user']);
 
-		$query->orderBy('date_from DESC');
+		$query->orderBy('created_at DESC');
 		// add conditions that should always apply here
 
 		$dataProvider = new ActiveDataProvider([
