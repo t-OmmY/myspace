@@ -25,7 +25,8 @@
         "kartik-v/yii2-widget-select2": "^2.1",
         "kartik-v/yii2-widget-datetimepicker": "^1.4",
         "kartik-v/yii2-date-range": "^1.6",
-        "linslin/yii2-curl": "*"
+        "linslin/yii2-curl": "*",
+        "c006/yii2-submit-spinner": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

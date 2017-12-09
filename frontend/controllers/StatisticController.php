@@ -9,8 +9,10 @@
 namespace frontend\controllers;
 
 
+use common\models\Exchange;
 use common\models\Outgo;
 use common\models\User;
+use common\models\Wallet;
 use DateTime;
 use Yii;
 use yii\db\Query;
@@ -47,12 +49,15 @@ class StatisticController extends Controller
     private function getYearData($year)
     {
         $rows = (new Query())
-            ->select(['YEAR(date) AS year', 'MONTH(date) AS month', 'outgo_source.name AS source', 'sum(value) AS value'])
+            ->select(['YEAR(date) AS year', 'MONTH(date) AS month', 'outgo_source.name AS source', 'sum(value) AS value', 'outgo.wallet_id'])
             ->from('outgo')
             ->innerJoin('outgo_source', 'outgo.outgo_source_id = outgo_source.id')
             ->where('YEAR(date) in (' . $year . ')')
-            ->groupBy(['YEAR(date)', 'MONTH(date)', 'outgo_source_id'])
+            ->where(['outgo.user_id' => Yii::$app->user->id])
+            ->groupBy(['YEAR(date)', 'MONTH(date)', 'outgo_source_id', 'outgo.wallet_id'])
             ->all();
+
+        $rows = $this->recalcToMainWallet($rows);
 
         $data = [];
         foreach ($rows as $row){
@@ -77,5 +82,29 @@ class StatisticController extends Controller
     {
         $data = $this->getYearData($year);
         echo json_encode($data);
+    }
+
+    public function recalcToMainWallet($data)
+    {
+        $model = new Wallet();
+        $model->user_id = Yii::$app->getUser()->id;
+
+        $user = $model->user;
+        $main_wallet_id = $user->main_wallet_id;
+
+        $main_wallet = $user->mainWallet;
+        $user_wallets = $user->wallets;
+        $rates = Exchange::getRates($user_wallets, $main_wallet);
+
+        foreach ($data as $key => $datum) {
+            if ($datum['wallet_id'] != $main_wallet_id){
+                $wallet = Wallet::findOne(['id' => $datum['wallet_id']]);
+                $wallet_code = $wallet->code;
+                $data[$key]['value'] = $data[$key]['value'] * $rates[$wallet_code];
+                $data[$key]['wallet_id'] = $main_wallet_id;
+            }
+        }
+
+        return $data;
     }
 }
