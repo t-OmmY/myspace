@@ -105,6 +105,7 @@ class OutgoSearch extends Outgo
             'outgo.outgo_source_id' => $this->outgo_source_id,
             'outgo.outgo_type_id' => $this->outgo_type_id,
             'value' => $this->value,
+            'wallet_id' => $this->wallet_id,
         ]);
 
         $query->andFilterWhere(['like', 'outgo.description', $this->description]);
