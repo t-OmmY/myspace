@@ -122,7 +122,6 @@ class StatisticController extends Controller
             if ($datum['wallet_id'] != $main_wallet_id){
                 $wallet = Wallet::findOne(['id' => $datum['wallet_id']]);
                 $wallet_code = $wallet->code;
-                //todo find and add to existing
 
                 $array_to_search = $datum;
                 unset($array_to_search['value']);
