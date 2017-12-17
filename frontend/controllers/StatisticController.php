@@ -22,6 +22,28 @@ use yii\web\Controller;
 
 class StatisticController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => 'yii\filters\AccessControl',
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
         //todo here should be a list of availables reports
@@ -100,10 +122,31 @@ class StatisticController extends Controller
             if ($datum['wallet_id'] != $main_wallet_id){
                 $wallet = Wallet::findOne(['id' => $datum['wallet_id']]);
                 $wallet_code = $wallet->code;
-                $data[$key]['value'] = $data[$key]['value'] * $rates[$wallet_code];
-                $data[$key]['wallet_id'] = $main_wallet_id;
+                //todo find and add to existing
+
+                $array_to_search = $datum;
+                unset($array_to_search['value']);
+                $array_to_search['wallet_id'] = $main_wallet_id;
+
+                $find_key = null;
+                foreach ($data as $i=>$item) {
+                    unset($item['value']);
+                    if ($array_to_search == $item){
+                        $find_key = $i;
+                    }
+                }
+
+                if (!$find_key) {
+                    $data[$key]['value'] = $data[$key]['value'] * $rates[$wallet_code];
+                    $data[$key]['wallet_id'] = $main_wallet_id;
+                } else {
+                    $data[$find_key]['value'] += $data[$key]['value'] * $rates[$wallet_code];
+                    unset($data[$key]);
+                }
             }
         }
+
+        $data = array_values($data);
 
         return $data;
     }

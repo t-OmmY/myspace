@@ -78,8 +78,8 @@ class OutgoSearch extends Outgo
         ]);
 
         $dataProvider->sort->attributes['wallet'] = [
-            'asc' => ['wallet.name' => SORT_ASC],
-            'desc' => ['wallet.name' => SORT_DESC],
+            'asc' => ['wallet.code' => SORT_ASC],
+            'desc' => ['wallet.code' => SORT_DESC],
         ];
 
         $dataProvider->sort->attributes['outgoSource'] = [
